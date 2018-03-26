@@ -1,0 +1,141 @@
+@import url('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
+
+@import 'framework/_variables.scss';
+@import 'framework/_reset.scss';
+
+
+.section-title {
+    margin-top: .8rem;
+    margin-bottom: 1rem;
+}
+.component {
+    background-color: #FFF;
+    border: 1px solid #EBEBEB;
+    /*background-color: #EBEBEB;
+    border: 1px solid #B0B0B0;*/
+    border-top-width: 4px;
+    margin-bottom: 20px;
+}
+
+textarea {
+    resize: none;
+}
+.reservation-content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;    
+}
+.habitacion {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    border: 1px solid #B0B0B0;
+    margin-bottom: .6rem;
+    padding: 5px 10px;
+}
+.habitacion-precio {
+    .input-group {
+        width: 110px;
+        .form-control {
+            text-align: center;
+        }
+    }
+}
+.form-group--flex {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1.3rem;
+
+    .form-control {
+        width: 60%;
+    }
+}
+
+.form-textarea {
+    align-items: initial;
+}
+
+.main-title {
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+}
+.rooms-text {
+    margin: 5rem 0;
+}
+/* CREDIT CARD VALIDATION */
+.credit-card.ng-touched.ng-valid {
+    border: 1px solid $green-flat;
+    box-shadow: 0 0 1px 1px rgba($color: $green-flat, $alpha: .5);
+}
+
+.credit-card.ng-touched.ng-invalid, .credit-card.ng-touched.ng-empty, form[name=reservaOnline] input.ng-touched.ng-empty.ng-invalid {
+    border: 1px solid $red-flat;
+    box-shadow: 0 0 1px 1px rgba($color: $red-flat, $alpha: .5)
+}
+.credit-card.ng-touched.ng-valid:focus {
+    border-color: $green-flat;
+    box-shadow: 0 0 1px 1px $green-flat;
+}
+.credit-card.ng-touched.ng-invalid:focus {
+    border-color: $red-flat;
+    box-shadow: 0 0 1px 1px rgba($color: $red-flat, $alpha: .5)
+}
+
+.credit-card.ng-touched.ng-invalid:active, .credit-card.ng-touched.ng-invalid:focus, .credit-card.ng-touched.ng-valid:active, .credit-card.ng-touched.ng-valid:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+input.credit-card + span {
+    display: none;
+}
+input.credit-card.ng-touched.ng-invalid + span{
+    position: absolute;
+    top: 11.5rem;
+    right: 4.3rem;
+    display: block;
+}
+
+/*DETALLE DE RESERVACION*/
+
+.cant-habs-reservadas {
+    height: 30px;
+    font-size: 2em;
+    font-weight: 500;
+}
+.total-noches {
+    height: 24px;
+    font-size: 1.5em;
+    font-weight: 500;
+
+    & + span  {
+        display: block;
+        font-size: .93em;
+        margin-top: 5px;
+        margin-left: -10px;
+    }
+}
+.total {
+    font-size: 36px;
+    margin-top: -8px;
+}
+/*.component-reservation:hover + .detalle-reserva, .detalle-reserva:hover {
+    display: block;
+}
+.detalle-reserva {
+    display: none;
+    position: absolute;
+    top: 116px;
+    z-index: 1;
+    background-color: #fff;
+    border: 1px solid #B0B0B0;
+}*/
+
+/*ICON REMOVE HABITACION FROM RESERVATION*/
+.fa-minus-circle {
+    cursor: pointer;
+    color: #e74c3c;
+}

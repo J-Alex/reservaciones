@@ -24,4 +24,6 @@ angular
     .constant('API', 'http://sistema.hotelosarcosesteli.com') //'http://reservas-jlex.c9users.io'
     .service('TestService', TestService)
     .component('homeComponent', homeComponent)
+    .filter("intNights",function(){ return function(nochesFloat) { return Math.floor(nochesFloat) } })
+    .filter('intero',function(){ return function (stringNum) { return parseInt(stringNum) } })
     .name;

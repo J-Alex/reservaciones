@@ -3,14 +3,43 @@
 @import 'framework/_variables.scss';
 @import 'framework/_reset.scss';
 
+.nav-tabs > li {
+    width: 33.333%;
+    background-color: #eee;
+    text-align: center;
 
+    a {
+        border: none !important;
+        border-radius: 0;
+        color: #993434;
+        margin: 0;
+        &:hover {
+            background-color: #ddd;
+        }
+    }
+}
+.nav-tabs > li.active a {
+    background-color: #993434 !important;
+    color: #fff !important;
+    &:hover{
+        color: #fff;
+    }
+}
+/*OLD*/
+.title-section {
+    font-size: 1.7em;
+    padding: 15px;
+    padding-bottom: 8px;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #ccc;
+}
 .section-title {
     margin-top: .8rem;
     margin-bottom: 1rem;
 }
 .component {
-    background-color: #EBEBEB;
-    border: 1px solid #B0B0B0;
+    background-color: #FFF;
+    border: 1px solid #EBEBEB;
     border-top-width: 4px;
     margin-bottom: 20px;
 }
@@ -18,12 +47,12 @@
 textarea {
     resize: none;
 }
-.reservation-content {
+/*.reservation-content {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;    
-}
+}*/
 .habitacion {
     display: flex;
     flex-direction: row;
@@ -32,6 +61,16 @@ textarea {
     border: 1px solid #B0B0B0;
     margin-bottom: .6rem;
     padding: 5px 10px;
+    
+    #{&}-detalle {
+        padding: .5em 0;
+    }
+    #{&}-detalle-tipo {
+        margin-bottom: 1em;
+    }
+    #{&}-detalle .form-group {
+        margin-bottom: 0;
+    }
 }
 .habitacion-precio {
     .input-group {
@@ -104,7 +143,7 @@ input.credit-card.ng-touched.ng-invalid + span{
     font-size: 2em;
     font-weight: 500;
 }
-.total-noches {
+/*.total-noches {
     height: 24px;
     font-size: 1.5em;
     font-weight: 500;
@@ -115,12 +154,20 @@ input.credit-card.ng-touched.ng-invalid + span{
         margin-top: 5px;
         margin-left: -10px;
     }
-}
+}*/
 .total {
     font-size: 36px;
     margin-top: -8px;
 }
-.component-reservation:hover + .detalle-reserva, .detalle-reserva:hover {
+.component-reservation .component:nth-child(1){
+    padding: 10px
+}
+.component-reservation__fixed{
+    position: fixed;
+    //top: 10rem;
+    right: 0;
+}
+/*.component-reservation:hover + .detalle-reserva, .detalle-reserva:hover {
     display: block;
 }
 .detalle-reserva {
@@ -130,10 +177,26 @@ input.credit-card.ng-touched.ng-invalid + span{
     z-index: 1;
     background-color: #fff;
     border: 1px solid #B0B0B0;
-}
+}*/
 
 /*ICON REMOVE HABITACION FROM RESERVATION*/
 .fa-minus-circle {
     cursor: pointer;
     color: #e74c3c;
+}
+
+.terminos-condiciones {
+    line-height: 1.5;
+    margin-top: 10px;
+}
+
+.section-title--reserva {
+    margin: 0;
+    margin-top: -15px;
+    margin-left: -11px;
+    margin-right: -11px;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #993434;
+    color: #fff;
 }

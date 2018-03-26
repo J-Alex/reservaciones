@@ -1,0 +1,400 @@
+<script src="https://use.fontawesome.com/8fe181ee31.js"></script>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 col-lg-12">
+            <h1 class="col-md-10 col-lg-10 col-md-offset-1 col-lg-offset-1 main-title" > Elegir Fechas </h1>
+            <!-- <div class="col-md-2 col-lg-2 col-md-offset-10 col-lg-offset-10">
+                <a href=""><span data-ng-click="home.spanish()"> ESPAÑOL </span></a> / <a href=""><span data-ng-click="home.english()"> ENGLISH </span></a>
+            </div> -->
+        </div>
+        <div class="col-md-12 col-lg-12">
+            
+            <!-- 
+                LEFT COLUMN 
+            -->            
+            <div class="col-md-6 col-lg-6 col-md-offset-1 col-lg-offset-1">
+                <!-- Check-in Check-out -->
+                <div class="component col-md-12 col-lg-12">
+                    <h4 data-ng-bind="home.i18n.infoGral" class="section-title">  </h4>
+                    <div class="form-group col-md-6 col-lg-6">
+                        <label for="" class="control-label" data-ng-bind="home.i18n.llegada"> </label>
+                        <input type="date" class="form-control" data-ng-model="home.fecha_in" data-ng-change="home.getRoomsAvailables()">
+                    </div>
+                    <div class="form-group col-md-6 col-lg-6">
+                        <label for="" class="control-label" data-ng-bind="home.i18n.salida"> </label>
+                        <input type="date" class="form-control" data-ng-model="home.fecha_out" data-ng-change="home.getRoomsAvailables()">
+                    </div>
+                </div>
+                <!-- Rooms Availables -->
+                <div class="component col-md-12 col-lg-12" data-ng-hide="!home.roomsAvailables || home.roomsAvailables.length == 0">
+                    <h4 class="section-title"> Habitaciones Disponibles </h4>
+
+                    <h2 class="text-center rooms-text" data-ng-hide="home.roomsAvailables"> Seleccione el día de llegada y día de salida de su estadía. </h2>
+                    
+
+                    <!-- Habitaciones Matrimoniales - x1 Cama Matrimonial -->
+                    <div data-ng-show="home.matrimonial.length != 0">
+                        <div class="habitacion">
+                            <div class="habitacion-detalle">
+                                <h4> {{ home.matrimonial.length }} Habitacion Matrimonial </h4>
+                                <p> <!--Capacidad máxima: {{ home.matrimonial[home.matrimonial.length - 1].max_huesp }} personas.-->  <span class="label alert-danger" data-ng-show="( home.matrimonial[home.matrimonial.length - 1].adultos + home.matrimonial[home.matrimonial.length - 1].ninos ) > home.matrimonial[home.matrimonial.length - 1].max_huesp"> CAPACIDAD REBASADA!! </span> </p>
+                                <div class="form-group form-inline">
+                        
+                                    <label class="control-label"> Adultos: </label>
+                                    <input type="number" class="form-control" min="1" max="2" data-ng-model=" home.matrimonial[home.matrimonial.length - 1].adultos " data-ng-change="home.precioHabit(home.matrimonial[home.matrimonial.length - 1])"> <!--  data-ng-model="habitacion.huespedes" data-ng-change="home.precioHabit(habitacion)" -->
+                                    
+                                    <label class="control-label"> Niños: </label>
+                                    <input type="number" class="form-control" min="0" max="1" data-ng-model=" home.matrimonial[home.matrimonial.length - 1].ninos " data-ng-change="home.precioHabit(home.matrimonial[home.matrimonial.length - 1])"> <!--  data-ng-model="habitacion.huespedes" data-ng-change="home.precioHabit(habitacion)" -->
+                                    
+                                    <label class="control-label"> Aire Acondicionado: </label>
+                                    <input type="checkbox" class="form-control"  data-ng-model=" home.matrimonial[home.matrimonial.length - 1].aire " data-ng-change="home.precioHabit(home.matrimonial[home.matrimonial.length - 1])"> <!--  data-ng-model="habitacion.aire" data-ng-change="home.precioHabit(habitacion)" -->
+                                
+                                </div>
+                                <!--<div>
+                                    <b> camas: </b>
+                                    <span data-ng-show="home.matrimonial[home.matrimonial.length - 1].c_king > 0"> {{ home.matrimonial[home.matrimonial.length - 1].c_king }} King</span>
+                                    <span data-ng-show="home.matrimonial[home.matrimonial.length - 1].c_queen > 0"> {{ home.matrimonial[home.matrimonial.length - 1].c_queen }} Queen</span>
+                                    <span data-ng-show="home.matrimonial[home.matrimonial.length - 1].c_matrimonial > 0"> {{ home.matrimonial[home.matrimonial.length - 1].c_matrimonial }} Matrimonial</span>
+                                    <span data-ng-show="home.matrimonial[home.matrimonial.length - 1].c_individual > 0"> {{ home.matrimonial[home.matrimonial.length - 1].c_individual }} Unipersonal</span>
+                                </div>--> 
+                            </div>
+                            <div class="habitacion-precio">
+                                <h1> ${{ home.matrimonial[home.matrimonial.length - 1].precio }}.00 </h1> <!-- PRECIO --> 
+                                <div class="input-group">
+                                    <span class="btn btn-default btn-warning btn-sm" data-ng-click="home.addRoom(home.matrimonial, home.matrimonial[home.matrimonial.length - 1])"> Add Room </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Habitaciones Dobles Standar - x2 Camas Individuales -->
+                    <div data-ng-show="home.dobleStandard.length != 0">
+                        <div class="habitacion">
+                            <div class="habitacion-detalle">
+                                <h4> {{ home.dobleStandard.length }} Habitacion Doble Standard </h4>
+                                <p> <!--Capacidad máxima: {{ home.dobleStandard[home.dobleStandard.length - 1].max_huesp }} personas.-->  <span class="label alert-danger" data-ng-show="( home.dobleStandard[home.dobleStandard.length - 1].adultos + home.dobleStandard[home.dobleStandard.length - 1].ninos ) > home.dobleStandard[home.dobleStandard.length - 1].max_huesp"> CAPACIDAD REBASADA!! </span> </p>
+                                <div class="form-group form-inline">
+                        
+                                    <label class="control-label"> Adultos: </label>
+                                    <input type="number" class="form-control" min="1" max="2" data-ng-model=" home.dobleStandard[home.dobleStandard.length - 1].adultos " data-ng-change="home.precioHabit(home.dobleStandard[home.dobleStandard.length - 1])"> <!--  data-ng-model="habitacion.huespedes" data-ng-change="home.precioHabit(habitacion)" -->
+                                    
+                                    <label class="control-label"> Niños: </label>
+                                    <input type="number" class="form-control" min="0" max="1" data-ng-model=" home.dobleStandard[home.dobleStandard.length - 1].ninos " data-ng-change="home.precioHabit(home.dobleStandard[home.dobleStandard.length - 1])"> <!--  data-ng-model="habitacion.huespedes" data-ng-change="home.precioHabit(habitacion)" -->
+                                    
+                                    <label class="control-label"> Aire Acondicionado: </label>
+                                    <input type="checkbox" class="form-control"  data-ng-model=" home.dobleStandard[home.dobleStandard.length - 1].aire " data-ng-change="home.precioHabit(home.dobleStandard[home.dobleStandard.length - 1])"> <!--  data-ng-model="habitacion.aire" data-ng-change="home.precioHabit(habitacion)" -->
+                                
+                                </div>
+                                <!--<div>
+                                    <b> camas: </b>
+                                    <span data-ng-show="home.dobleStandard[home.dobleStandard.length - 1].c_king > 0"> {{ home.dobleStandard[home.dobleStandard.length - 1].c_king }} King</span>
+                                    <span data-ng-show="home.dobleStandard[home.dobleStandard.length - 1].c_queen > 0"> {{ home.dobleStandard[home.dobleStandard.length - 1].c_queen }} Queen</span>
+                                    <span data-ng-show="home.dobleStandard[home.dobleStandard.length - 1].c_matrimonial > 0"> {{ home.dobleStandard[home.dobleStandard.length - 1].c_matrimonial }} Matrimonial</span>
+                                    <span data-ng-show="home.dobleStandard[home.dobleStandard.length - 1].c_individual > 0"> {{ home.dobleStandard[home.dobleStandard.length - 1].c_individual }} Unipersonal</span>
+                                </div>--> 
+                            </div>
+                            <div class="habitacion-precio">
+                                <h1> ${{ home.dobleStandard[home.dobleStandard.length - 1].precio }}.00 </h1> <!-- PRECIO -->
+                                <div class="input-group">
+                                    <span class="btn btn-default btn-warning btn-sm" data-ng-click="home.addRoom(home.dobleStandard, home.dobleStandard[home.dobleStandard.length - 1])"> Add Room </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Habitaciones Dobles Compuestas - x1 Cama Matrimonial + x1 Cama Unipersonal -->
+                    <div data-ng-show="home.dobleCompuesta.length != 0">
+                        <div class="habitacion">
+                            <div class="habitacion-detalle">
+                                <h4> {{ home.dobleCompuesta.length }} Habitacion Doble Compuesta </h4>
+                                <p> <!--Capacidad máxima: {{ home.dobleCompuesta[home.dobleCompuesta.length - 1].max_huesp }} personas.-->  <span class="label alert-danger" data-ng-show="( home.dobleCompuesta[home.dobleCompuesta.length - 1].adultos + home.dobleCompuesta[home.dobleCompuesta.length - 1].ninos ) > home.dobleCompuesta[home.dobleCompuesta.length - 1].max_huesp"> CAPACIDAD REBASADA!! </span> </p>
+                                <div class="form-group form-inline">
+                        
+                                    <label class="control-label"> Adultos: </label>
+                                    <input type="number" class="form-control" min="1" max="3" data-ng-model=" home.dobleCompuesta[home.dobleCompuesta.length - 1].adultos " data-ng-change="home.precioHabit(home.dobleCompuesta[home.dobleCompuesta.length - 1])"> <!--  data-ng-model="habitacion.huespedes" data-ng-change="home.precioHabit(habitacion)" -->
+                                    
+                                    <label class="control-label"> Niños: </label>
+                                    <input type="number" class="form-control" min="0" max="2" data-ng-model=" home.dobleCompuesta[home.dobleCompuesta.length - 1].ninos " data-ng-change="home.precioHabit(home.dobleCompuesta[home.dobleCompuesta.length - 1])"> <!--  data-ng-model="habitacion.huespedes" data-ng-change="home.precioHabit(habitacion)" -->
+                                    
+                                    <label class="control-label"> Aire Acondicionado: </label>
+                                    <input type="checkbox" class="form-control"  data-ng-model=" home.dobleCompuesta[home.dobleCompuesta.length - 1].aire " data-ng-change="home.precioHabit(home.dobleCompuesta[home.dobleCompuesta.length - 1])"> <!--  data-ng-model="habitacion.aire" data-ng-change="home.precioHabit(habitacion)" -->
+                                
+                                </div>
+                                <!--<div>
+                                    <b> camas: </b>
+                                    <span data-ng-show="home.dobleCompuesta[home.dobleCompuesta.length - 1].c_king > 0"> {{ home.dobleCompuesta[home.dobleCompuesta.length - 1].c_king }} King</span>
+                                    <span data-ng-show="home.dobleCompuesta[home.dobleCompuesta.length - 1].c_queen > 0"> {{ home.doblCompuestar[home.dobleCompuesta.length - 1].c_queen }} Queen</span>
+                                    <span data-ng-show="home.dobleCompuesta[home.dobleCompuesta.length - 1].c_matrimonial > 0"> {{ home.dobleCompuesta[home.dobleCompuesta.length - 1].c_matrimonial }} Matrimonial</span>
+                                    <span data-ng-show="home.dobleCompuesta[home.dobleCompuesta.length - 1].c_individual > 0"> {{ home.dobleCompuesta[home.dobleCompuesta.length - 1].c_individual }} Unipersonal</span>
+                                </div>--> 
+                            </div>
+                            <div class="habitacion-precio">
+                                <h1> ${{ home.dobleCompuesta[home.dobleCompuesta.length - 1].precio }}.00 </h1> <!-- PRECIO -->
+                                <div class="input-group">
+                                    <span class="btn btn-default btn-warning btn-sm" data-ng-click="home.addRoom(home.dobleCompuesta, home.dobleCompuesta[home.dobleCompuesta.length - 1])"> Add Room </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Habitaciones Dobles Superior - x2 Camas Matrimoniales -->
+                    <div data-ng-show="home.dobleSuperior.length != 0" style="background: #fff;">
+                        <div class="habitacion">
+                            <div class="habitacion-detalle">
+                                <h4> {{ home.dobleSuperior.length }} Habitacion Doble Superior </h4>
+                                <p> Capacidad por habitación: <!-- {{ home.dobleSuperior[home.dobleSuperior.length - 1].max_huesp }} --> 2 personas.  <span class="label alert-danger" data-ng-show="( home.dobleSuperior[home.dobleSuperior.length - 1].adultos + home.dobleSuperior[home.dobleSuperior.length - 1].ninos ) > home.dobleSuperior[home.dobleSuperior.length - 1].max_huesp"> CAPACIDAD REBASADA!! </span> </p>
+                                <div class="form-group form-inline">
+                                    <label class"control-label"> Cant. H. </label>
+                                    <select class="form-control">
+                                        <option data-ng-repeat="habitacion in home.dobleSuperior" value="{{ $index + 1 }}" > {{ $index + 1 }} </option>
+                                        <!-- <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>-->
+                                    </select>
+
+                                    <label class="control-label"> Adultos: </label>
+                                    <input type="number" class="form-control" min="1" max="4" data-ng-model=" home.dobleSuperior[home.dobleSuperior.length - 1].adultos " data-ng-change="home.precioHabit(home.dobleSuperior[home.dobleSuperior.length - 1])"> <!--  data-ng-model="habitacion.huespedes" data-ng-change="home.precioHabit(habitacion)" -->
+                                    
+                                    <label class="control-label"> Niños: </label>
+                                    <input type="number" class="form-control" min="0" max="3" data-ng-model=" home.dobleSuperior[home.dobleSuperior.length - 1].ninos " data-ng-change="home.precioHabit(home.dobleSuperior[home.dobleSuperior.length - 1])"> <!--  data-ng-model="habitacion.huespedes" data-ng-change="home.precioHabit(habitacion)" -->
+                                    
+                                    <div>
+                                        <label class="control-label"> Aire Acondicionado: </label>
+                                        <input type="checkbox" class="form-control"  data-ng-model=" home.dobleSuperior[home.dobleSuperior.length - 1].aire " data-ng-change="home.precioHabit(home.dobleSuperior[home.dobleSuperior.length - 1])"> <!--  data-ng-model="habitacion.aire" data-ng-change="home.precioHabit(habitacion)" -->                                        
+                                    </div>
+                                
+                                </div>
+                                <!--<div>
+                                    <b> camas: </b>
+                                    <span data-ng-show="home.dobleSuperior[home.dobleSuperior.length - 1].c_king > 0"> {{ home.dobleSuperior[home.dobleSuperior.length - 1].c_king }} King</span>
+                                    <span data-ng-show="home.dobleSuperior[home.dobleSuperior.length - 1].c_queen > 0"> {{ home.dobleSuperior[home.dobleSuperior.length - 1].c_queen }} Queen</span>
+                                    <span data-ng-show="home.dobleSuperior[home.dobleSuperior.length - 1].c_matrimonial > 0"> {{ home.dobleSuperior[home.dobleSuperior.length - 1].c_matrimonial }} Matrimonial</span>
+                                    <span data-ng-show="home.dobleSuperior[home.dobleSuperior.length - 1].c_individual > 0"> {{ home.dobleSuperior[home.dobleSuperior.length - 1].c_individual }} Unipersonal</span>
+                                </div>--> 
+                            </div>
+                            <div class="habitacion-precio">
+                                <h1> ${{ home.dobleSuperior[home.dobleSuperior.length - 1].precio }}.00 </h1> <!-- PRECIO -->
+                                <div class="input-group">
+                                    <span class="btn btn-default btn-warning btn-sm" data-ng-click="home.addRoom(home.dobleSuperior, home.dobleSuperior[home.dobleSuperior.length - 1])"> Add Room </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Habitaciones Triples - x3 Camas Unipersonales -->
+                    <div data-ng-show="home.triple.length != 0">
+                        <div class="habitacion">
+                            <div class="habitacion-detalle">
+                                <h4> {{ home.triple.length }} Habitación Triple </h4>
+                                <p> <!--Capacidad máxima: {{ home.triple[home.triple.length - 1].max_huesp }} personas.-->  <span class="label alert-danger" data-ng-show="( home.triple[home.triple.length - 1].adultos + home.triple[home.triple.length - 1].ninos ) > home.triple[home.triple.length - 1].max_huesp" > CAPACIDAD REBASADA!! </span> </p>
+                                <div class="form-group form-inline">
+                            
+                                    <label class="control-label"> Adultos: </label>
+                                    <input type="number" class="form-control" min="1" max="3" data-ng-model=" home.triple[home.triple.length - 1].adultos " data-ng-change="home.precioHabit(home.triple[home.triple.length - 1])"> <!--  data-ng-model="habitacion.huespedes" data-ng-change="home.precioHabit(habitacion)" -->
+                                    
+                                    <label class="control-label"> Niños: </label>
+                                    <input type="number" class="form-control" min="0" max="2" data-ng-model=" home.triple[home.triple.length - 1].ninos " data-ng-change="home.precioHabit(home.triple[home.triple.length - 1])"> <!--  data-ng-model="habitacion.huespedes" data-ng-change="home.precioHabit(habitacion)" -->
+                                    
+                                    <label class="control-label" data-ng-model=" home.triple[home.triple.length - 1].aire " data-ng-change="home.precioHabit(home.triple[home.triple.length - 1])"> Aire Acondicionado: </label>
+                                    <input type="checkbox" class="form-control"> <!--  data-ng-model="habitacion.aire" data-ng-change="home.precioHabit(habitacion)" -->
+                                
+                                </div>
+                                <!--<div>
+                                    <b> camas: </b>
+                                    <span data-ng-show="home.triple[home.triple.length - 1].c_king > 0"> {{ home.triple[home.triple.length - 1].c_king }} King</span>
+                                    <span data-ng-show="home.triple[home.triple.length - 1].c_queen > 0"> {{ home.triple[home.triple.length - 1].c_queen }} Queen</span>
+                                    <span data-ng-show="home.triple[home.triple.length - 1].c_matrimonial > 0"> {{ home.triple[home.triple.length - 1].c_matrimonial }} Matrimonial</span>
+                                    <span data-ng-show="home.triple[home.triple.length - 1].c_individual > 0"> {{ home.triple[home.triple.length - 1].c_individual }} Unipersonal</span>
+                                </div>--> 
+                            </div>
+                            <div class="habitacion-precio">
+                                <h1> ${{ home.triple[home.triple.length - 1].precio }}.00 </h1> <!-- PRECIO -->
+                                <div class="input-group">
+                                    <span class="btn btn-default btn-warning btn-sm" data-ng-click="home.addRoom(home.triple, home.triple[home.triple.length - 1])"> Add Room </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Habitaciones Suite Junior - x1 Queen || x1 Matrimonial -->
+                    <div data-ng-show="home.suiteJunior.length != 0">
+                        <div class="habitacion">
+                            <div class="habitacion-detalle">
+                                <h4> {{ home.suiteJunior.length }} Suite Junior</h4>
+                                <p> <!--Capacidad máxima: {{ home.suiteJunior[home.suiteJunior.length - 1].max_huesp }} personas.-->  <span class="label alert-danger" data-ng-show="( home.suiteJunior[home.suiteJunior.length - 1].adultos + home.suiteJunior[home.suiteJunior.length - 1].ninos ) > home.suiteJunior[home.suiteJunior.length - 1].max_huesp" > CAPACIDAD REBASADA!! </span> </p>
+                                <div class="form-group form-inline">
+                                
+                                    <label class="control-label"> Adultos: </label>
+                                    <input type="number" class="form-control" min="1" max="2" data-ng-model=" home.suiteJunior[home.suiteJunior.length - 1].adultos " data-ng-change="home.precioHabit(home.suiteJunior[home.suiteJunior.length - 1])"> <!--  data-ng-model="habitacion.huespedes" data-ng-change="home.precioHabit(habitacion)" -->
+                                    
+                                    <label class="control-label"> Niños: </label>
+                                    <input type="number" class="form-control" min="0" max="1" data-ng-model=" home.suiteJunior[home.suiteJunior.length - 1].ninos " data-ng-change="home.precioHabit(home.suiteJunior[home.suiteJunior.length - 1])"> <!--  data-ng-model="habitacion.huespedes" data-ng-change="home.precioHabit(habitacion)" -->
+                                    
+                                    <label class="control-label" data-ng-model=" home.suiteJunior[home.suiteJunior.length - 1].aire " data-ng-change="home.precioHabit(home.suiteJunior[home.suiteJunior.length - 1])"> Aire Acondicionado: </label>
+                                    <input type="checkbox" class="form-control"> <!--  data-ng-model="habitacion.aire" data-ng-change="home.precioHabit(habitacion)" -->
+                                
+                                </div>
+                                <!--<div>
+                                    <b> camas: </b>
+                                    <span data-ng-show="home.suiteJunior[home.suiteJunior.length - 1].c_king > 0"> {{ home.suiteJunior[home.suiteJunior.length - 1].c_king }} King</span>
+                                    <span data-ng-show="home.suiteJunior[home.suiteJunior.length - 1].c_queen > 0"> {{ home.suiteJunior[home.suiteJunior.length - 1].c_queen }} Queen</span>
+                                    <span data-ng-show="home.suiteJunior[home.suiteJunior.length - 1].c_matrimonial > 0"> {{ home.suiteJunior[home.suiteJunior.length - 1].c_matrimonial }} Matrimonial</span>
+                                    <span data-ng-show="home.suiteJunior[home.suiteJunior.length - 1].c_individual > 0"> {{ home.suiteJunior[home.suiteJunior.length - 1].c_individual }} Unipersonal</span>
+                                </div>--> 
+                            </div>
+                            <div class="habitacion-precio">
+                                <h1> ${{ home.suiteJunior[home.suiteJunior.length - 1].precio }}.00 </h1> <!-- PRECIO -->
+                                <div class="input-group">
+                                    <span class="btn btn-default btn-warning btn-sm" data-ng-click="home.addRoom(home.suiteJunior, home.suiteJunior[home.suiteJunior.length - 1])"> Add Room </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Habitaciones Suite Presidencial - x1 King -->
+                    <div data-ng-show="home.suitePresidencial.length != 0">
+                        <div class="habitacion">
+                            <div class="habitacion-detalle">
+                                <h4> {{ home.suitePresidencial.length }} Suite Presidencial</h4>
+                                <p> <!--Capacidad máxima: {{ home.suitePresidencial[home.suitePresidencial.length - 1].max_huesp }} personas.-->  <span class="label alert-danger" data-ng-show="( home.suitePresidencial[home.suitePresidencial.length - 1].adultos + home.suitePresidencial[home.suitePresidencial.length - 1].ninos ) > home.suitePresidencial[home.suitePresidencial.length - 1].max_huesp" > CAPACIDAD REBASADA!! </span> <!-- CAPACIDAD --></p>
+                                <div class="form-group form-inline">
+                                    
+                                    <label class="control-label"> Adultos: </label>
+                                    <input type="number" class="form-control" min="1" max="2" data-ng-model=" home.suitePresidencial[home.suitePresidencial.length - 1].adultos" data-ng-change="home.precioHabit(home.suitePresidencial[home.suitePresidencial.length - 1])"> <!--  data-ng-model="habitacion.huespedes" data-ng-change="home.precioHabit(habitacion)" -->
+                                    
+                                    <label class="control-label"> Niños: </label>
+                                    <input type="number" class="form-control" min="0" max="2" data-ng-model=" home.suitePresidencial[home.suitePresidencial.length - 1].ninos" data-ng-change="home.precioHabit(home.suitePresidencial[home.suitePresidencial.length - 1])"> <!--  data-ng-model="habitacion.huespedes" data-ng-change="home.precioHabit(habitacion)" -->
+                                    
+                                    <label class="control-label" data-ng-model=" home.suitePresidencial[home.suitePresidencial.length - 1].aire" data-ng-change="home.precioHabit(home.suitePresidencial[home.suitePresidencial.length - 1])"> Aire Acondicionado: </label>
+                                    <input type="checkbox" class="form-control"> <!--  data-ng-model="habitacion.aire" data-ng-change="home.precioHabit(habitacion)" -->
+                                
+                                </div>
+                                <!--<div>
+                                    <b> camas: </b>
+                                    <span data-ng-show="home.suitePresidencial[home.suitePresidencial.length - 1].c_king > 0"> {{ home.suitePresidencial[home.suitePresidencial.length - 1].c_king }} King</span>
+                                    <span data-ng-show="home.suitePresidencial[home.suitePresidencial.length - 1].c_queen > 0"> {{ home.suitePresidencial[home.suitePresidencial.length - 1].c_queen }} Queen</span>
+                                    <span data-ng-show="home.suitePresidencial[home.suitePresidencial.length - 1].c_matrimonial > 0"> {{ home.suitePresidencial[home.suitePresidencial.length - 1].c_matrimonial }} Matrimonial</span>
+                                    <span data-ng-show="home.suitePresidencial[home.suitePresidencial.length - 1].c_individual > 0"> {{ home.suitePresidencial[home.suitePresidencial.length - 1].c_individual }} Unipersonal</span>
+                                </div>--> 
+                            </div>
+                            <div class="habitacion-precio">
+                                <h1> ${{ home.suitePresidencial[home.suitePresidencial.length - 1].precio }}.00 </h1> <!-- PRECIO -->
+                                <div class="input-group">
+                                    <span class="btn btn-default btn-warning btn-sm" data-ng-click="home.addRoom(home.suitePresidencial, home.suitePresidencial[home.suitePresidencial.length - 1])"> Add Room </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- 
+                LEFT CENTER
+            -->
+            <div class="col-md-4 col-lg-4">
+                
+                <!-- Reservation Detail -->
+                <div class="component component-reservation col-md-12 col-lg-12">
+                    <h4 class="section-title"> Detalle de Reserva </h4>
+                    <div class="reservation-content">
+                        <div class="reservation-detail">
+                            <div class="cant-habs-reservadas">{{ home.reserva.habitaciones.length }} Habitaciones</div>
+                            <div class="total-noches" data-ng-show=" home.nochesValidator" > <span data-ng-bind="home.noches"> </span> Noches </div>
+                            <span class="label alert-danger" data-ng-show=" !home.nochesValidator " > Indique un rango de fechas válidos </span>
+                            <!-- <h2> <span data-ng-class="{ hidden: 0 > (home.reserva.fecha_fin - home.reserva.fecha_ini) / (1000*60*60*24) }"> {{ (home.reserva.fecha_fin - home.reserva.fecha_ini) / (1000*60*60*24) }} </span> Noches</h2> -->
+                        </div>
+                        <div class="reservation-total">
+                            <div class="total">${{ home.reserva.total }}.00</div>
+                        </div>
+                    </div>
+                    <div class="text-center"> <i class="caret"></i> </div>
+                </div>
+
+
+                <div class="component detalle-reserva col-md-12 col-lg-12">
+                    <h4 class="section-title"> Habitaciones Reservadas </h4>
+                    <div class="habitaciones-reservadas">
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="text-center"> Tipo </th>
+                                    <th class="text-center"> Noches </th>
+                                    <th class="text-center"> precio </th>
+                                    <th class="text-center"> Total </th>
+                                    <th class="text-center"> Remover </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr data-ng-repeat="reservada in home.reserva.habitaciones">
+                                    <td> {{ reservada.categoria }} </td>
+                                    <td class="text-center"> {{ home.noches }} </td>
+                                    <td class="text-center"> ${{ ( reservada.precio / home.noches ) }}.00 </td>
+                                    <td class="text-center"> ${{ reservada.precio }}.00 </td>
+                                    <td class="text-center"> <i class="fa fa-minus-circle" aria-hidden="true" data-ng-click="home.habitacionRemove(reservada)"></i> </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                            
+                    </div>
+                </div>
+
+                <!-- Costumer Information -->
+                <div class="component col-md-12 col-lg-12">
+                    <h4 class="section-title">Información Personal</h4>
+                    <form name="reservaOnline" data-ng-submit="home.reservar()" novalidate>
+                        <div class="form-group form-inline form-group--flex">
+                            <label for="" class="control-label"> Nombre Completo </label>
+                            <input type="text" class="form-control" data-ng-model="home.reserva.nombre_reservante" placeholder="Nombres y Apellidos" required>
+                        </div>
+                        <!-- <div class="form-group form-inline form-group--flex">
+                            <label for="" class="control-label"> Apellidos </label>
+                            <input type="text" class="form-control" data-ng-model="home.reserva.apellidos">
+                        </div> -->
+                        <div class="form-group form-inline form-group--flex">
+                            <label for="" class="control-label"> Identificación </label>
+                            <input type="text" class="form-control" placeholder="Cédula o Pasaporte">
+                        </div>
+                        <div class="form-group form-inline form-group--flex">
+                            <label for="" class="control-label"> Correo </label>
+                            <input type="text" class="form-control" data-ng-model="home.reserva.correo_reservante" placeholder="direccion@email.com" required>
+                        </div>
+                        <div class="form-group form-inline form-group--flex">
+                            <label for="" class="control-label"> Teléfono </label>
+                            <input type="text" class="form-control">
+                        </div>
+                        <div class="form-group form-inline form-group--flex">
+                            <label for="" class="control-label"> País </label>
+                            <input type="text" class="form-control" data-ng-model="home.reserva.pais">
+                        </div>
+                        <div class="form-group form-inline form-group--flex form-textarea">
+                            <label for="" class="control-label"> Mensaje </label>
+                            <textarea class="form-control" rows="4" data-ng-model="home.reserva.nota"></textarea>
+                        </div>
+                        <div class="form-group form-inline form-group--flex has-error">
+                            <label for="" class="control-label"> N° Tarjeta de Crédito </label>
+                            <input type="text" class="form-control credit-card" data-ng-model="home.reserva.tarjeta" data-ng-pattern="/^([0-9]{4}( |\-)){3}[0-9]{4}$/" minlength="19" maxlength="19" placeholder="1234 1234 1234 1234" required>
+                            <span class="label label-danger">16 números con espacios o guiones </span>
+                        </div>
+                        <div class="form-group col-md-3 col-lg-3 col-md-offset-7 col-lg-offset-7">
+                            <button class="btn btn-default btn-primary" data-ng-disabled="reservaOnline.$invalid"> Reservar </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 
+                RIGHT COLUMN 
+            <div class="col-md-4 col-lg-4">
+                <div class="component col-md-12 col-lg-12">
+                </div>
+            </div>
+            -->
+
+        </div>
+    </div>
+</div>
