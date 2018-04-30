@@ -1,47 +1,27 @@
 class HomeCtrl {
     
-    constructor($document, $scope, $interval, TestService, API) {
+    constructor($document, $scope, TestService) {
         'ngInject'
 
         this.$document = $document;
         this.$scope = $scope;
-        this.$interval = $interval;
 
-        this.API = API;
         this.TestService = TestService;
 
-        /*this.title = "HOGAR";
-        this.maxlength = 19; */
-
-        this.i18n;
-        
-        this.esp = {
-            infoGral: "Comprobar Disponibilidad",
-            llegada: "Día de LLegada",
-            salida: "Día de Salida"
-        }
-
-        this.eng = {
-            infoGral: "General Information",
-            llegada: "Arriving Day",
-            salida: "Out Day"
-        }
         /**/
         this.roomsAvailables = [];
-
+        
         this.suitePresidencial = [];
         this.suiteJunior = [];
         this.triple = [];
         this.dobleSuperior = [];
-        this.dobleCompuesta = [];
         this.dobleStandard = [];
-        this.matrimonial = [];
         this.doblePersonal = [];
         /**/
 
         this.manejador = true;
         //this.noches = (this.reserva.fecha_fin - this.reserva.fecha_ini) / (1000*60*60*24);
-        
+        this.condiciones = false;
         //FECHA, HOY, MAÑANA
         let date = new Date();
 
@@ -57,10 +37,6 @@ class HomeCtrl {
         this.fecha_out = tomorrow;
         this.noches = 1;
         this.nochesValidator = true;
-        
-        /*console.log(tomorrow);
-        console.log(this.fecha_out);
-        console.log(this.fecha_in);*/
         
         this.reserva = {
             today: hoy,
@@ -79,8 +55,7 @@ class HomeCtrl {
     }
 
     $onInit() {
-        //console.log(this);
-        //this.i18n = this.esp;
+        this.$document.find('[data-toggle="tooltip"]').tooltip()
         this.getRoomsAvailables();
         this.diaIn = moment(this.fecha_in).format("DD-MM-YYYY");
         this.diaOut = moment(this.fecha_out).format("DD-MM-YYYY");
@@ -88,45 +63,86 @@ class HomeCtrl {
         let detalleReserva = this.$document.find('.component-reservation');
         let document = this.$document;
         
-        document.scroll(function(e) {
-            //console.log(document.scrollTop());
-            
+        document.scroll(function(e) {            
             if(document.scrollTop() > 100 ){
                 detalleReserva.addClass('component-reservation__fixed');
             } else {
                 detalleReserva.removeClass('component-reservation__fixed');
             }
+        });
 
-        })
-        /*this.$document.scroll(()=>{
-            console.log(this.$document.find('.component-reservation')[0].offset().top)
-        })*/
-        /*$(window).scroll(function(){
-            console.log(this.$document.find('.component-reservation'))
-        });*/
-        
         this.individualRooms = [];
         this.individualCant = 0;
         this.individualMax = 0;
         this.individualHuespedes = 0;
-        this.individualAdultos = 1;
-        this.individualNinos = 0; 
-        this.individualAire = false; 
-    }
-    addHuespedes() {
-        this.individualHuespedes = this.individualAdultos + this.individualNinos
-    }
-    addHabits() {
-        this.individualMax = 1 * this.individualCant;
-    }
-    english() {
-        this.i18n = this.eng;
-    }
-    spanish() {
-        this.i18n = this.esp;
+        this.individualAdultos = 0;
+        //this.individualNinos = 0;
+        this.individualAdultosTot = 0;
+        //this.individualNinosTot = 0;  
+        this.individualAire = false;
+        this.individualSubtotal = 0;
+
+        this.standardRooms = [];
+        this.standardCant = 0;
+        this.standardMax = 0;
+        this.standardHuespedes = 0;
+        this.standardAdultos = 0;
+        this.standardNinos = 0;
+        this.standardAdultosTot = 0;
+        this.standardNinosTot = 0;
+        this.standardAire = false;
+        this.standardSubtotal = 0;
+
+        this.doblesRooms = [];
+        this.doblesCant = 0;
+        this.doblesMax = 0;
+        this.doblesHuespedes = 0;
+        this.doblesAdultos = 0;
+        this.doblesNinos = 0;
+        this.doblesAdultosTot = 0;
+        this.doblesNinosTot = 0;
+        this.doblesAire = false;
+        this.doblesSubtotal = 0;
+        
+        this.triplesRooms = [];
+        this.triplesCant = 0;
+        this.triplesMax = 0;
+        this.triplesHuespedes = 0;
+        this.triplesAdultos = 0;
+        this.triplesNinos = 0;
+        this.triplesAdultosTot = 0;
+        this.triplesNinosTot = 0;
+        this.triplesAire = false;
+        this.triplesSubtotal = 0;
+        
+        this.suitejrRooms = [];
+        this.suitejrCant = 0;
+        this.suitejrMax = 0;
+        this.suitejrHuespedes = 0;
+        this.suitejrAdultos = 0;
+        this.suitejrNinos = 0;
+        this.suitejrAdultosTot = 0;
+        this.suitejrNinosTot = 0;
+        this.suitejrAire = false;
+        this.suitejrSubtotal = 0;
+        
+        this.suiteRooms = [];
+        this.suiteCant = 0;
+        this.suiteMax = 0;
+        this.suiteHuespedes = 0;
+        this.suiteAdultos = 0;
+        this.suiteNinos = 0;
+        this.suiteAdultosTot = 0;
+        this.suiteNinosTot = 0;
+        this.suiteAire = false;
+        this.suiteSubtotal = 0;
+        //console.log(this);
     }
     getRoomsAvailables() {
         this.roomsAvailables = [];
+        this.reserva.cant_adult = 0;
+        this.reserva.cant_menores = 0;
+        this.individualRooms = [];
         
         this.diaIn = moment(this.fecha_in).format("DD-MM-YYYY");
         this.diaOut = moment(this.fecha_out).format("DD-MM-YYYY");
@@ -134,9 +150,11 @@ class HomeCtrl {
         let esteDia = this.reserva.today / (1000*60*60*24);
         let entrada = this.fecha_in / (1000*60*60*24);
         let salida = this.fecha_out / (1000*60*60*24);
-        console.log("Hoy:" + esteDia);
+        
+        /*console.log("Hoy:" + esteDia);
         console.log("Entrada:" + entrada);
-        console.log("Salida:" + salida);
+        console.log("Salida:" + salida);*/
+        
         /*let hoy = this.reserva.today * 1;
         let inicio = this.reserva.fecha_ini * 1;
         let fin = this.reserva.fecha_fin * 1;
@@ -155,14 +173,14 @@ class HomeCtrl {
             this.reserva.fecha_in <= this.reserva.today ||
             this.reserva.fecha_out <= this.reserva.fecha_in*/) {
 
-                console.log("Malo");
+                //console.log("Malo");
                 this.roomsAvailables = [];
                 this.nochesValidator = false;
                 //this.$document.find('input[type=date]').val("");
                 //this.$document.find('').reset();
         
         } else {
-            console.log("Bueno");
+            //console.log("Bueno");
             this.nochesValidator = true;
 
             this.TestService.getData({fecha_ini: this.fecha_in, fecha_fin: this.fecha_out})
@@ -174,9 +192,9 @@ class HomeCtrl {
                     this.suiteJunior = [];
                     this.triple = [];
                     this.dobleSuperior = [];
-                    this.dobleCompuesta = [];
+                    //this.dobleCompuesta = [];
                     this.dobleStandard = [];
-                    this.matrimonial = [];
+                    //this.matrimonial = [];
                     this.doblePersonal = [];
 
 
@@ -191,7 +209,7 @@ class HomeCtrl {
                             { element.precio = element.s_junior; element.categoria = "Suite Jr."; this.suiteJunior.push(element) }
                         
                         if (element.c_matrimonial == 1 && element.tipo == "suite") 
-                            { element.precio = element.s_junior; element.categoria = "Suite Junior"; this.suiteJunior.push(element) }
+                            { element.precio = element.s_junior; element.categoria = "Suite Jr."; this.suiteJunior.push(element) }
                         
                         if (element.c_individual == 3 ) 
                             { element.precio = element.triple; element.categoria = "Triple"; this.triple.push(element) }
@@ -228,124 +246,33 @@ class HomeCtrl {
         }
 
     }
-    precioHabit(habitacion){
-        //ASIGNANDO HUESPEDES A LA HABITACION AL CAMBIAR CONTROLES DE ADULTOS Y NINOS
-        /*if(!habitacion.ninos) {
-            habitacion.huespedes = habitacion.adultos;            
+    
+    individualAddHabits() {
+        this.individualMax = 1 * this.individualCant;
+        this.individualAdultos = 1 * this.individualCant;
+    }
+    individualprecioHabit(){
+        if(this.individualAire) {
+            this.doblePersonal[this.doblePersonal.length - 1].precio = this.doblePersonal[this.doblePersonal.length - 1].ssaa
         } else {
-            habitacion.huespedes = habitacion.adultos + habitacion.ninos;
-        }*/
-
-        //ASIGNANDO PRECIO A LA HABITACION AL CAMBIAR CONTROLES DE ADULTOS Y NINOS
-        /*if( habitacion.huespedes == 1 ) { habitacion.precio = habitacion.ssvv; }
-        if( habitacion.huespedes == 1 && habitacion.aire ) { habitacion.precio = habitacion.ssaa; }
-        
-        if( habitacion.huespedes == 1 && habitacion.c_matrimonial == 2 ) { habitacion.precio = habitacion.ddvv; }
-        if( habitacion.huespedes == 1 && habitacion.c_matrimonial == 2 && habitacion.aire ) { habitacion.precio = habitacion.ddaa; }
-
-        if( habitacion.huespedes == 1 && habitacion.c_matrimonial == 1 && habitacion.c_individual == 1 ) { habitacion.precio = habitacion.ddvv; }
-        if( habitacion.huespedes == 1 && habitacion.c_matrimonial == 1 && habitacion.c_individual == 1 && habitacion.aire ) { habitacion.precio = habitacion.ddaa; }*/
-
-        /*if( habitacion.huespedes == 2 && habitacion.ddvv ) { habitacion.precio = habitacion.ddvv; }*/
-        //if( habitacion.huespedes == 3 && habitacion.triple ) { habitacion.precio = habitacion.triple; }
-        /*if( habitacion.huespedes == 2 && habitacion.ddaa && habitacion.aire ){ habitacion.precio = habitacion.ddaa; }*/
-        //if( habitacion.huespedes == 3 && habitacion.triple && habitacion.aire ){ habitacion.precio = habitacion.triple; }
-
-        /*if( habitacion.huespedes == 2 && habitacion.mmvv ) { habitacion.precio = habitacion.mmvv; }
-        if( habitacion.huespedes == 2 && habitacion.mmaa && habitacion.aire ){ habitacion.precio = habitacion.mmaa; }*/
-        
-        //if( habitacion.c_individual == 3 && habitacion.triple ) { habitacion.precio = habitacion.triple; }
-        //if( habitacion.huespedes == 4 ) { habitacion.precio = habitacion.cuadruple; }
-        
-        /*if( habitacion.huespedes != 0 && habitacion.s_presi ) { habitacion.precio = habitacion.s_presi; }
-        if( habitacion.huespedes != 0 && habitacion.s_junior ) { habitacion.precio = habitacion.s_junior; }*/
-        
-        //ASIGNANDO PRECIO A LA HABITACION AL CAMBIO DEL CHKBOX AIRE ACONDICIONADO
-        //true
-        if(habitacion.aire == true) {
-            if(habitacion.precio == habitacion.ddvv) { habitacion.precio = habitacion.ddaa }
-            if(habitacion.precio == habitacion.mmvv) { habitacion.precio = habitacion.mmaa }
-            if(habitacion.precio == habitacion.ssvv) { habitacion.precio = habitacion.ssaa }
-        }
-        //false
-        if(habitacion.aire == false) {
-            if(habitacion.precio == habitacion.ddaa) { habitacion.precio = habitacion.ddvv }
-            if(habitacion.precio == habitacion.mmaa) { habitacion.precio = habitacion.mmvv }
-            if(habitacion.precio == habitacion.ssaa) { habitacion.precio = habitacion.ssvv }
-        }
-
-/*
-        switch(habitacion.huespedes){
-            case 1:
-                habitacion.precio = habitacion.ssvv;
-                break;
-            case 2:
-                habitacion.precio = habitacion.ddvv;
-                break;
-            case 3:
-                habitacion.precio = habitacion.triple;
-                break;
-            case 4:
-                habitacion.precio = habitacion.cuadruple;
-                break;
-        }
-*/
+            this.doblePersonal[this.doblePersonal.length - 1].precio = this.doblePersonal[this.doblePersonal.length - 1].ssvv
+        }        
     }
-
-/*
-    habitacionAdd(habitacion){
-        if(!habitacion.huespedes){
-            alert("Indique una cantidad de huespedes para esta habitación")
-        } else {
-            this.roomsAvailables.forEach( (e, i) => {
-                if(e.id == habitacion.id) {
-                    this.roomsAvailables.splice(i, 1);
-                    e.precio *= this.noches;
-                    this.reserva.habitaciones.push(e);
-                } else {
-                    //console.log(this.habitacion);
-                }
-            });
-        }
-
-        //this.reserva.total = this.reserva.habitaciones.reduce( (total, habitacion) => { return total + habitacion.precio })
-        this.reserva.total = 0;
-        this.reserva.cant_adult = 0;
-
-        this.reserva.habitaciones.forEach( (habitacion) => {
-            this.reserva.total += habitacion.precio;
-            this.reserva.cant_adult += habitacion.huespedes;
-        });
-    }
-*/
-    removeRooms(){
-
-        for(let i=0; i < this.individualRooms.length; i++) {
-            this.doblePersonal.push(this.individualRooms[i]);
-        }
-
-        
-
-            this.reserva.habitaciones = [];
-            this.individualRooms = [];
-    }
-
-    addRoom(){
-        console.log(this.doblePersonal)
+    individualAddRoom(){
 
         if(this.individualCant == 0) {
             swal({ text: "Indique la cantidad de habitaciones individuales que desea reservar", icon: "warning" })
-        } else if(this.individualHuespedes == 0) {
+        } else if(this.individualAdultos == 0) {
             swal({ text: "Indique la cantidad de huespedes para las habitaciones seleccionadas", icon: "warning" })
-        } else if( this.individualHuespedes > this.individualMax ){
+        } else if( this.individualHuespedes > this.individualMax ) {
             swal({ text: "Cantidad de personas rebasa la capacidad de habitaciones seleccionadas", icon: "warning" })
         } else {
             for(let i=0; i < this.individualCant; i++) {
                 
                 if(this.individualAire){
-                    this.doblePersonal[i].precio = this.doblePersonal[i].ssaa
+                    this.doblePersonal[i].precio = this.doblePersonal[i].ssaa;
                 } else {
-                    this.doblePersonal[i].precio = this.doblePersonal[i].ssvv
+                    this.doblePersonal[i].precio = this.doblePersonal[i].ssvv;
                 }
 
                 this.reserva.habitaciones.push( this.doblePersonal[i] );
@@ -355,117 +282,471 @@ class HomeCtrl {
             for(let i=0; i < this.individualCant; i++) {
                 this.doblePersonal.shift();
             }
-            this.reserva.total = this.reserva.habitaciones.reduce( (inicial, habitacion) => { return inicial += habitacion.precio },0)
+
+            this.individualSubtotal = this.individualRooms.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+            //this.individualTotal = this.individualRooms.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+
+            this.reserva.total = this.reserva.habitaciones.reduce( (inicial, habitacion) => { return inicial += habitacion.precio },0);
+            this.reserva.total *= this.noches;
             this.reserva.cant_adult += this.individualAdultos;
-            this.reserva.cant_menores += this.individualNinos;
-        }
-        
-        this.individualAdultos = 1;
-        //console.log(this.reserva)
+            //this.reserva.cant_menores += this.individualNinos;
 
+            this.individualAdultosTot += this.individualAdultos;
+            //this.individualNinosTot += this.individualNinos;
+
+            this.individualAdultos = 0;
+            this.individualCant = 0;
+        }        
     }
-    /*addRoom(arr, room) {
-        
-        if(!room.huespedes || room.huespedes <= 0){
-            swal({text: "Indique una cantidad de huespedes para esta habitación", icon: "warning"})
-        } else if (room.huespedes > room.max_huesp) {
-            console.log("Capacidad rebasada");
-        } else {
-            arr.pop();
-            room.precio *= this.noches;
+    removeIndividualRooms(){
 
-            this.reserva.habitaciones.push(room);
+        for(let i=0; i < this.individualRooms.length; i++) {
+            this.individualAire = false;
+            this.individualRooms[i].precio = this.individualRooms[i].ssvv;
+            this.doblePersonal.push(this.individualRooms[i]);
         }
 
-        this.reserva.total = 0;
-        this.reserva.cant_adult = 0;
-        this.reserva.cant_menores = 0;
-
-        this.reserva.habitaciones.forEach( (habitacion) => {
-            this.reserva.total += habitacion.precio;
-            this.reserva.cant_adult += habitacion.adultos;
-            this.reserva.cant_menores += habitacion.ninos;
-        });
-    }*/
-    habitacionRemove(obj){
-        console.log(obj);
-        this.reserva.habitaciones.forEach( (e, i) => {
-            if(e.id == obj.id) {
-                //this.habitaciones.push(e);
-                this.reserva.habitaciones.splice(i, 1);
-
-
-                if (obj.c_king == 1) { this.suitePresidencial.push(obj) }
-                if (obj.c_queen == 1) { this.suiteJunior.push(obj) }
-                if (obj.c_matrimonial == 1 && obj.tipo == "suite") { this.suiteJunior.push(obj) }
-                if (obj.c_individual == 3 ) { this.triple.push(obj) }
-                if (obj.c_matrimonial == 2) { this.dobleSuperior.push(obj) }
-                if (obj.c_matrimonial == 1 && obj.c_individual == 1) { this.dobleCompuesta.push(obj) }
-                if (obj.c_individual == 2) { this.dobleStandard.push(obj) }
-                if (obj.c_matrimonial == 1 && !obj.c_individual && obj.mmvv) { this.matrimonial.push(obj) }
-
-
-                this.reserva.total = 0;
-                this.reserva.cant_adult = 0;
+        //this.reserva.habitaciones.forEach( (e,i) => {
+            this.remover("D. Unipersonal");
+        //});
     
-                this.reserva.habitaciones.forEach( (habitacion) => {
-                    this.reserva.total += habitacion.precio;
-                    this.reserva.cant_adult += habitacion.huespedes;
-                });
-            } else {
-                //console.log(obj);
-            }
-        });
+        this.reserva.total = this.reserva.habitaciones.reduce( (inicial, habitacion) => { return inicial += habitacion.precio },0);
+        
+        this.reserva.cant_adult -= this.individualAdultosTot;
+        //this.reserva.cant_menores -= this.individualNinosTot;
+        this.individualAdultosTot = 0;
+        //this.individualNinosTot = 0;
+
+        this.individualRooms = [];
     }
+   
+    /*
+    *   Standard Logic
+    */    
+    standardAddHabits() {
+        this.standardMax = 2 * parseInt(this.standardCant);
+        this.standardAdultos = 1;
+    }
+    standardPrecioHabit(){
+        if(this.standardAire) {
+            this.dobleStandard[this.dobleStandard.length - 1].precio = this.dobleStandard[this.dobleStandard.length - 1].mmaa;
+        } else {
+            this.dobleStandard[this.dobleStandard.length - 1].precio = this.dobleStandard[this.dobleStandard.length - 1].mmvv;
+        }
+    }
+    standardAddRoom(){
+        if(this.standardCant == 0) {
+            swal({ text: "Indique la cantidad de habitaciones standard que desea reservar", icon: "warning" })
+        } else if( this.standardMax < this.standardAdultos + this.standardNinos ) {
+            swal({ text: "Cantidad de personas rebasa la capacidad de habitaciones seleccionadas", icon: "warning" })
+        } else if(this.standardAdultos == 0 || this.standardAdultos + this.standardNinos == 0) {
+            swal({ text: "Indique la cantidad de huespedes para las habitaciones seleccionadas", icon: "warning" })
+        } else {
+            //swal({ text:"Agregandas exitósamente", icon:"success" })
+            for(let i=0; i < this.standardCant; i++) {
+                
+                if(this.standardAire){
+                    this.dobleStandard[i].precio = this.dobleStandard[i].mmaa;
+                } else {
+                    this.dobleStandard[i].precio = this.dobleStandard[i].mmvv;
+                }
 
-    reservar() {
-        if(this.manejador){
-            this.manejador = false;
-            /**/
-                //this.reserva.id_recepcionista = 16;                
-                //this.reserva.hora_llegada = "06:30 pm";
-                this.reserva.titular_reservacion = "VACIO-L278";
-            /**/
-            this.reserva.fecha_in = moment(this.fecha_in).format('YYYY-MM-DD');
-            this.reserva.fecha_out = moment(this.fecha_out).format('YYYY-MM-DD');
+                this.reserva.habitaciones.push( this.dobleStandard[i] );
+                this.standardRooms.push( this.dobleStandard[i] );
+            }
+
+            for(let i=0; i < this.standardCant; i++) {
+                this.dobleStandard.shift();
+            }
+
+            this.standardSubtotal = this.standardRooms.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+            this.reserva.total = this.reserva.habitaciones.reduce( (inicial, habitacion) => { return inicial += habitacion.precio },0);
             
-            if(this.reserva.habitaciones.length == 0) {
-                swal({text: "No has seleccionado ninguna habitación", icon: "warning"});
-                this.manejador = true;
-            } else {
-                this.TestService.guardarReserva(this.reserva)
-                    .then( (res) => {
-                        if(res == undefined) {
-                            swal({text: "Falló", icon: "warning"});
-                            this.manejador = true;
-                        } else {
-                            swal({title: "Su reservación ha sido enviada con éxito!!", text: "Le enviaremos un mensaje de confirmación a su correo.", icon: "success"});
-                            this.manejador = true;
+            this.reserva.total *= this.noches;
+            this.reserva.cant_adult += this.standardAdultos;
+            this.reserva.cant_menores += this.standardNinos;            
+            
+            this.standardAdultosTot += this.standardAdultos;
+            this.standardNinosTot += this.standardNinos;
 
-                            this.reserva = {
-                                fecha_res: moment(new Date()).format('YYYY-MM-DD'),
-                                habitaciones: [],
-                                origen: 1,
-                                estado: 0,
-                                total: 0,
-                                cant_adult: 0,
-                                cant_menores: 0,
-                            };
-                        }
-                    })
-            }            
-            //setTimeout(() =>{ this.manejador = true; },5000)          
+            this.standardNinos = 0;
+            this.standardAdultos = 0;
+            this.standardCant = 0;
+            this.standardMax = 0;
+        }
+        
+    }
+    remover(match) {
+        let i=0;
+        while(i != this.reserva.habitaciones.length){ 
+            if(this.reserva.habitaciones[i].categoria === match){
+                this.reserva.habitaciones.splice(i, 1);
+                //delete this.reserva.habitaciones[i];
+            } else {
+                i++;
+            }
+        }
+    }
+    removeStandardRooms(){
+        this.standardRooms.forEach( (e,i) => {
+        //for(let i=0; i == this.standardRooms.length; i++) {
+            this.standardAire = false;
+            this.standardRooms[i].precio = this.standardRooms[i].mmvv;
+            this.dobleStandard.push(this.standardRooms[i]);
+        });
+
+        this.remover("Matrimonial");
+        
+        this.reserva.total = this.reserva.habitaciones.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+        
+        this.reserva.cant_adult -= this.standardAdultosTot;
+        this.reserva.cant_menores -= this.standardNinosTot;
+        this.standardAdultosTot = 0;
+        this.standardNinosTot = 0;
+
+        this.standardRooms = [];
+    }
+    
+    /*
+    * Superior Logic
+    */
+    doblesAddHabits(){
+        this.doblesMax = 2 * parseInt(this.doblesCant);
+        this.doblesAdultos = 1;
+    }
+    precioDoblesHabit(){
+        if(this.doblesAire) {
+            this.dobleSuperior[this.dobleSuperior.length - 1].precio = this.dobleSuperior[this.dobleSuperior.length - 1].ddaa;
+        } else {
+            this.dobleSuperior[this.dobleSuperior.length - 1].precio = this.dobleSuperior[this.dobleSuperior.length - 1].ddvv;
+        }
+    }
+    addDoblesRoom(){
+        if(this.doblesCant == 0) {
+            swal({ text: "Indique la cantidad de habitaciones dobles superior que desea reservar", icon: "warning" })
+        } else if( this.doblesMax < this.doblesAdultos + this.doblesNinos ) {
+            swal({ text: "Cantidad de personas rebasa la capacidad de habitaciones seleccionadas", icon: "warning" })
+        } else if(this.doblesAdultos == 0 || this.doblesAdultos + this.doblesNinos == 0) {
+            swal({ text: "Indique la cantidad de huespedes para las habitaciones seleccionadas", icon: "warning" })
+        } else {
+            for(let i=0; i < this.doblesCant; i++) {
+                
+                if(this.doblesAire){
+                    this.dobleSuperior[i].precio = this.dobleSuperior[i].mmaa;
+                } else {
+                    this.dobleSuperior[i].precio = this.dobleSuperior[i].mmvv;
+                }
+
+                this.reserva.habitaciones.push( this.dobleSuperior[i] );
+                this.doblesRooms.push( this.dobleSuperior[i] );
+            }
+
+            for(let i=0; i < this.doblesCant; i++) {
+                this.dobleSuperior.shift();
+            }
+
+            this.doblesSubtotal = this.doblesRooms.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+            this.reserva.total = this.reserva.habitaciones.reduce( (inicial, habitacion) => { return inicial += habitacion.precio },0);
+            
+            this.reserva.total *= this.noches;
+            this.reserva.cant_adult += this.doblesAdultos;
+            this.reserva.cant_menores += this.doblesNinos;
+            
+            this.doblesAdultosTot += this.doblesAdultos;
+            this.doblesNinosTot += this.doblesNinos;
+
+            this.doblesNinos = 0;
+            this.doblesAdultos = 0;
+            this.doblesCant = 0;
+            this.doblesMax = 0;
+        }
+    }
+    removeDoblesRooms(){
+        
+        this.doblesRooms.forEach( (e,i) => {
+        //for(let i=0; i == this.doblesRooms.length; i++) {
+            this.doblesAire = false;
+            this.doblesRooms[i].precio = this.doblesRooms[i].mmvv;
+            this.dobleSuperior.push(this.doblesRooms[i]);
+        });
+
+        this.remover("D. Superior");
+        
+        this.reserva.total = this.reserva.habitaciones.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+        
+        this.reserva.cant_adult -= this.doblesAdultosTot;
+        this.reserva.cant_menores -= this.doblesNinosTot;
+        this.doblesAdultosTot = 0;
+        this.doblesNinosTot = 0;
+
+        this.doblesRooms = [];
+    }
+    
+    /*
+    * Triple Logic
+    */
+    triplesAddHabits(){
+        this.triplesMax = 3 * parseInt(this.triplesCant);
+        this.triplesAdultos = 1;
+    }
+    precioTriplesHabits(){
+        console.log(this);
+    }
+    addTriplesRoom(){
+        if(this.triplesCant == 0) {
+            swal({ text: "Indique la cantidad de habitaciones triples que desea reservar", icon: "warning" })
+        } else if( this.triplesMax < this.triplesAdultos + this.triplesNinos ) {
+            swal({ text: "Cantidad de personas rebasa la capacidad de habitaciones seleccionadas", icon: "warning" })
+        } else if(this.triplesAdultos == 0 || this.triplesAdultos + this.triplesNinos == 0) {
+            swal({ text: "Indique la cantidad de huespedes para las habitaciones seleccionadas", icon: "warning" })
+        } else {
+            for(let i=0; i < this.triplesCant; i++) {
+                
+                /*if(this.triplesAire){
+                    this.tripleSuperior[i].precio = this.tripleSuperior[i].mmaa;
+                } else {
+                    this.tripleSuperior[i].precio = this.tripleSuperior[i].mmvv;
+                }*/
+
+                this.reserva.habitaciones.push( this.triple[i] );
+                this.triplesRooms.push( this.triple[i] );
+            }
+
+            for(let i=0; i < this.triplesCant; i++) {
+                this.triple.shift();
+            }
+
+            this.triplesSubtotal = this.triplesRooms.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+            //this.triplesTotal = this.triplesRooms.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+
+            this.reserva.total = this.reserva.habitaciones.reduce( (inicial, habitacion) => { return inicial += habitacion.precio },0);
+            this.reserva.total *= this.noches;
+            this.reserva.cant_adult += this.triplesAdultos;
+            this.reserva.cant_menores += this.triplesNinos;
+
+            this.triplesAdultosTot += this.triplesAdultos;
+            this.triplesNinosTot += this.triplesNinos;
+            
+            this.triplesNinos = 0;
+            this.triplesAdultos = 0;
+            this.triplesCant = 0;
+            this.triplesMax = 0;
+        }
+    }
+    removeTriplesRoom(){
+        this.triplesRooms.forEach( (e,i) => {
+        //for(let i=0; i == this.triplesRooms.length; i++) {
+            this.triplesAire = false;
+            this.triplesRooms[i].precio = this.triplesRooms[i].triple;
+            this.triple.push(this.triplesRooms[i]);
+        });
+
+        this.remover("Triple");
+        
+        this.reserva.total = this.reserva.habitaciones.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+        
+        this.reserva.cant_adult -= this.triplesAdultosTot;
+        this.reserva.cant_menores -= this.triplesNinosTot;
+        this.triplesAdultosTot = 0;
+        this.triplesNinosTot = 0;
+
+        this.triplesRooms = [];
+    }
+    
+    /*
+    * SuiteJr Logic
+    */
+    suitejrAddHabits(){
+        this.suitejrMax = 2 * parseInt(this.suitejrCant);
+        this.suitejrAdultos = 1;        
+    }
+    addSuiteJrRoom(){
+        console.log(this);
+        if(this.suitejrCant == 0) {
+            swal({ text: "Indique la cantidad de habitaciones suitejr que desea reservar", icon: "warning" })
+        } else if( this.suitejrMax < this.suitejrAdultos + this.suitejrNinos ) {
+            swal({ text: "Cantidad de personas rebasa la capacidad de habitaciones seleccionadas", icon: "warning" })
+        } else if(this.suitejrAdultos == 0 || this.suitejrAdultos + this.suitejrNinos == 0) {
+            swal({ text: "Indique la cantidad de huespedes para las habitaciones seleccionadas", icon: "warning" })
+        } else {
+            for(let i=0; i < this.suitejrCant; i++) {
+                
+                /*if(this.suitejrAire){
+                    this.suitejruperior[i].precio = this.suitejruperior[i].mmaa;
+                } else {
+                    this.suitejruperior[i].precio = this.suitejruperior[i].mmvv;
+                }*/
+
+                this.reserva.habitaciones.push( this.suiteJunior[i] );
+                this.suitejrRooms.push( this.suiteJunior[i] );
+            }
+
+            for(let i=0; i < this.suitejrCant; i++) {
+                this.suiteJunior.shift();
+            }
+
+            this.suitejrSubtotal = this.suitejrRooms.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+            //this.suitejrTotal = this.suitejrRooms.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+
+            this.reserva.total = this.reserva.habitaciones.reduce( (inicial, habitacion) => { return inicial += habitacion.precio },0);
+            this.reserva.total *= this.noches;
+            this.reserva.cant_adult += this.suitejrAdultos;
+            this.reserva.cant_menores += this.suitejrNinos;
+            
+            this.suitejrAdultosTot += this.suitejrAdultos;
+            this.suitejrNinosTot += this.suitejrNinos;
+
+            this.suitejrNinos = 0;
+            this.suitejrAdultos = 0;
+            this.suitejrCant = 0;
+            this.suitejrMax = 0;
+        }
+    }
+    removeSuiteJrRoom(){
+        this.suitejrRooms.forEach( (e,i) => {
+        //for(let i=0; i == this.suitejrRooms.length; i++) {
+            this.suitejrAire = false;
+            this.suitejrRooms[i].precio = this.suitejrRooms[i].s_junior;
+            this.suiteJunior.push(this.suitejrRooms[i]);
+        });
+
+        this.remover("Suite Jr.");
+        
+        this.reserva.total = this.reserva.habitaciones.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+        
+        this.reserva.cant_adult -= this.suitejrAdultosTot;
+        this.reserva.cant_menores -= this.suitejrNinosTot;
+        this.suitejrAdultosTot = 0;
+        this.suitejrNinosTot = 0;
+
+        this.suitejrRooms = [];
+    }
+    
+    /*
+    * SuiteJr Logic
+    */
+    suiteAddHabits(){
+        this.suiteMax = 2 * parseInt(this.suiteCant);
+        this.suiteAdultos = 1;        
+    }
+    addSuiteRoom(){
+        console.log(this);
+        if(this.suiteCant == 0) {
+            swal({ text: "Indique la cantidad de habitaciones suite que desea reservar", icon: "warning" })
+        } else if( this.suiteMax < this.suiteAdultos + this.suiteNinos ) {
+            swal({ text: "Cantidad de personas rebasa la capacidad de habitaciones seleccionadas", icon: "warning" })
+        } else if(this.suiteAdultos == 0 || this.suiteAdultos + this.suiteNinos == 0) {
+            swal({ text: "Indique la cantidad de huespedes para las habitaciones seleccionadas", icon: "warning" })
+        } else {
+            for(let i=0; i < this.suiteCant; i++) {
+                
+                /*if(this.suiteAire){
+                    this.suiteuperior[i].precio = this.suiteuperior[i].mmaa;
+                } else {
+                    this.suiteuperior[i].precio = this.suiteuperior[i].mmvv;
+                }*/
+
+                this.reserva.habitaciones.push( this.suitePresidencial[i] );
+                this.suiteRooms.push( this.suitePresidencial[i] );
+            }
+
+            for(let i=0; i < this.suiteCant; i++) {
+                this.suitePresidencial.shift();
+            }
+
+            this.suiteSubtotal = this.suiteRooms.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+            //this.suiteTotal = this.suiteRooms.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+
+            this.reserva.total = this.reserva.habitaciones.reduce( (inicial, habitacion) => { return inicial += habitacion.precio },0);
+            this.reserva.total *= this.noches;
+            this.reserva.cant_adult += this.suiteAdultos;
+            this.reserva.cant_menores += this.suiteNinos;
+            
+            this.suiteAdultosTot += this.suiteAdultos;
+            this.suiteNinosTot += this.suiteNinos;
+            
+            this.suiteNinos = 0;
+            this.suiteAdultos = 0;
+            this.suiteCant = 0;
+            this.suiteMax = 0;
+        }
+    }
+    removeSuiteRoom(){
+        this.suiteRooms.forEach( (e,i) => {
+        //for(let i=0; i == this.suiteRooms.length; i++) {
+            this.suiteAire = false;
+            this.suiteRooms[i].precio = this.suiteRooms[i].s_presi;
+            this.suitePresidencial.push(this.suiteRooms[i]);
+        });
+
+        this.remover("Suite P.");
+        
+        this.reserva.total = this.reserva.habitaciones.reduce( (inicial, habitacion) => { return inicial += habitacion.precio }, 0);
+        
+        this.reserva.cant_adult -= this.suiteAdultosTot;
+        this.reserva.cant_menores -= this.suiteNinosTot;
+        this.suiteAdultosTot = 0;
+        this.suiteNinosTot = 0;
+
+        this.suiteRooms = [];
+    }
+    reservar() {
+        if(this.condiciones){
+            if(this.manejador){
+                this.manejador = false;
+                /**/
+                    //this.reserva.id_recepcionista = 16;                
+                    //this.reserva.hora_llegada = "06:30 pm";
+                    this.reserva.titular_reservacion = "VACIO-L278";
+                /**/
+                this.reserva.fecha_in = moment(this.fecha_in).format('YYYY-MM-DD');
+                this.reserva.fecha_out = moment(this.fecha_out).format('YYYY-MM-DD');
+                
+                if(this.reserva.habitaciones.length == 0) {
+                    swal({text: "No has seleccionado ninguna habitación", icon: "warning"});
+                    this.manejador = true;
+                } else {
+                    this.TestService.guardarReserva(this.reserva)
+                        .then( (res) => {
+                            if(res == undefined) {
+                                swal({text: "Falló", icon: "warning"});
+                                this.manejador = true;
+                            } else {
+                                swal({title: "Su reservación ha sido enviada con éxito!!", text: "Le enviaremos un mensaje de confirmación a su correo.", icon: "success"});
+                                this.manejador = true;
+                                this.condiciones = false;
+                                
+                                this.reserva = {
+                                    fecha_res: moment(new Date()).format('YYYY-MM-DD'),
+                                    habitaciones: [],
+                                    origen: 1,
+                                    estado: 0,
+                                    total: 0,
+                                    cant_adult: 0,
+                                    cant_menores: 0,
+                                };
+                            }
+                        })
+                }            
+                //setTimeout(() =>{ this.manejador = true; },5000)          
+                console.log(this.reserva);
+            } else {
+                swal({text: "Espere a que la acción anterior concluya", icon: "info"});
+            }
+        } else {
+            //swal({icon: "warning", text: `${this.condiciones}`})
+            this.$document.find('#condiciones').tooltip('show');
+        }
+
+    }
+    ver(){
+        if(this.condiciones){
+            swal({icon: "success", text: `${this.condiciones}`});
             console.log(this.reserva);
         } else {
-            swal({text: "Espere a que la acción anterior concluya", icon: "info"});
+            swal({icon: "warning", text: `${this.condiciones}`});
+            this.$document.find('#condiciones').tooltip('show');
         }
-    }
-
-    /*
-        BOTÓN RESERVAR
-    */
-    ver(){
-        console.log(this.reserva);
     }
 }
 
